@@ -218,12 +218,12 @@ class ArSysViewer
 			);
 			dst.setOrigin(pos);
 
-            tf::Quaternion ornOld = dst.getRotation();
-            tf::Quaternion ornNew = src.getRotation();
-            tf::Quaternion orn;
-            // Interpolation between two quaternions.
-            orn = ornOld.slerp(ornNew,digital_filter_change_rate);
-            dst.setRotation(orn);
+		        tf::Quaternion ornOld = dst.getRotation();
+		        tf::Quaternion ornNew = src.getRotation();
+		        tf::Quaternion orn;
+		        // Interpolation between two quaternions.
+		        orn = ornOld.slerp(ornNew,digital_filter_change_rate);
+		        dst.setRotation(orn);
 
 			return dst;
 		}
