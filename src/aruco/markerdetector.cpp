@@ -31,6 +31,8 @@ or implied, of Rafael Muñoz Salinas.
 #include <aruco/ar_omp.h>
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
 #include <iostream>
 #include <fstream>
 #include <valarray>

@@ -31,6 +31,7 @@ or implied, of Rafael Muñoz Salinas.
 #include <cstdio>
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
 using namespace cv;
 namespace aruco {
 /**
