@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 	visualization_msgs
 )
 
+find_package(OpenCV REQUIRED)
+
 ###################################
 ## catkin specific configuration ##
 ###################################
@@ -44,7 +46,7 @@ add_library(aruco
 	src/aruco/ar_omp.cpp
 	src/aruco/subpixelcorner.cpp
 )
-target_link_libraries(aruco ${catkin_LIBRARIES})
+target_link_libraries(aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 add_executable(single_board src/single_board.cpp
 	src/utils.cpp)
