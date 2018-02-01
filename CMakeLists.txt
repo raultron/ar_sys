@@ -5,13 +5,22 @@ find_package(catkin REQUIRED COMPONENTS
 	cv_bridge
 	dynamic_reconfigure
 	geometry_msgs
+  std_msgs
 	image_transport
 	roscpp
 	tf
 	visualization_msgs
+  message_generation
 )
 
+
 find_package(OpenCV REQUIRED)
+
+## Declare ROS messages and services
+add_service_files(FILES set_marker.srv)
+
+## Generate added messages and services
+generate_messages(DEPENDENCIES std_msgs)
 
 ###################################
 ## catkin specific configuration ##
@@ -25,7 +34,7 @@ find_package(OpenCV REQUIRED)
 catkin_package(
 	INCLUDE_DIRS include
 	LIBRARIES aruco
-	CATKIN_DEPENDS cv_bridge dynamic_reconfigure geometry_msgs image_transport visualization_msgs roscpp tf
+  CATKIN_DEPENDS cv_bridge dynamic_reconfigure geometry_msgs image_transport visualization_msgs roscpp tf std_msgs message_runtime
 #	DEPENDS system_lib
 )
 
@@ -50,12 +59,12 @@ target_link_libraries(aruco ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 add_executable(single_board src/single_board.cpp
 	src/utils.cpp)
-add_dependencies(single_board ${catkin_EXPORTED_TARGETS})
+add_dependencies(single_board ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(single_board aruco ${catkin_LIBRARIES})
 
 add_executable(multi_boards src/multi_boards.cpp
 	src/utils.cpp)
-add_dependencies(multi_boards ${catkin_EXPORTED_TARGETS})
+add_dependencies(multi_boards ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages_cpp)
 target_link_libraries(multi_boards aruco ${catkin_LIBRARIES})
 
 add_executable(system_viewer src/system_viewer.cpp)

@@ -1,0 +1,6 @@
+uint8 marker_family # 1) aruco_single, 2) aruco_multi, else aruco_single
+uint8 marker_id     # As defined by each marker family
+float32 marker_size # Required size of the marker in meters
+string marker_name  # The name of the marker to be used as coordinate frame of the marker in TF
+---
+bool result
