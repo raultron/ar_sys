@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "aruco/aruco.h"
+#include "aruco.h"
 #include <sensor_msgs/CameraInfo.h>
 #include <tf/transform_datatypes.h>
 
