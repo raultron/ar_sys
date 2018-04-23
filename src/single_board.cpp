@@ -11,6 +11,7 @@
 #include <sstream>
 
 #include <ros/ros.h>
+#include <ros/package.h>
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/image_encodings.h>
 #include <cv_bridge/cv_bridge.h>
@@ -38,7 +39,7 @@ class ArSysSingleBoard
 		bool draw_markers_axis;
     bool publish_tf;
     MarkerDetector MDetector;
-    vector< Marker >  Markers;
+    std::vector< Marker >  Markers;
 
     // ARUCO 2.0 Marker Map Replaces board
     MarkerMap the_marker_map_config;
@@ -77,7 +78,9 @@ class ArSysSingleBoard
 			position_pub = nh.advertise<geometry_msgs::Vector3Stamped>("position", 100);
 
 			nh.param<double>("marker_size", marker_size, 0.05);
-      nh.param<std::string>("marker_set_config", marker_set_config, "markerSetConfig.yml");
+      std::string package_path = ros::package::getPath("ar_sys");
+
+      nh.param<std::string>("marker_set_config", marker_set_config, package_path+"/data/single/board.yml");
       nh.param<std::string>("marker_set_frame", marker_set_frame, "");
 			nh.param<bool>("image_is_rectified", useRectifiedImages, true);
 			nh.param<bool>("draw_markers", draw_markers, false);
@@ -112,13 +115,23 @@ class ArSysSingleBoard
         // detect markers without computing R and T information
         Markers=MDetector.detect(InImage);
 
+//        // print the markers detected that belongs to the markerset
+//        std::vector<int> markers_from_set = the_marker_map_config.getIndices(Markers);
+//        for (auto idx : markers_from_set)
+//            Markers[idx].draw(InImage, std::Scalar(0, 0, 255), 2);
+
 
         //detect the 3d camera location wrt the markerset (if possible)
         if ( the_marker_map_config.isExpressedInMeters() && camParam.isValid()) {
+
           MarkerMapPoseTracker MSPoseTracker;//tracks the pose of the marker map
+          //if (useRectifiedImages){
+          //  camParam.Distorsion = cv::Mat();
+          //}
+
           MSPoseTracker.setParams(camParam,the_marker_map_config);
           if ( MSPoseTracker.estimatePose(Markers)){//if pose correctly computed, print the reference system
-            aruco::CvDrawingUtils::draw3dAxis(InImage,camParam,MSPoseTracker.getRvec(),MSPoseTracker.getTvec(),the_marker_map_config[0].getMarkerSize()*2);
+            aruco::CvDrawingUtils::draw3dAxis(resultImg,camParam,MSPoseTracker.getRvec(),MSPoseTracker.getTvec(),the_marker_map_config[0].getMarkerSize()*2);
             tf::Transform transform = ar_sys::getTf(MSPoseTracker.getRvec(), MSPoseTracker.getTvec());
             tf::StampedTransform stampedTransform(transform, msg->header.stamp, msg->header.frame_id, marker_set_frame);
             if (publish_tf)
@@ -138,28 +151,30 @@ class ArSysSingleBoard
             positionMsg.vector = transformMsg.transform.translation;
             position_pub.publish(positionMsg);
 
-            if(image_pub.getNumSubscribers() > 0)
-            {
-              //show input with augmented information
-              cv_bridge::CvImage out_msg;
-              out_msg.header.frame_id = msg->header.frame_id;
-              out_msg.header.stamp = msg->header.stamp;
-              out_msg.encoding = sensor_msgs::image_encodings::RGB8;
-              out_msg.image = resultImg;
-              image_pub.publish(out_msg.toImageMsg());
-            }
 
-            if(debug_pub.getNumSubscribers() > 0)
-            {
-              //show also the internal image resulting from the threshold operation
-              cv_bridge::CvImage debug_msg;
-              debug_msg.header.frame_id = msg->header.frame_id;
-              debug_msg.header.stamp = msg->header.stamp;
-              debug_msg.encoding = sensor_msgs::image_encodings::MONO8;
-              debug_msg.image = MDetector.getThresholdedImage();
-              debug_pub.publish(debug_msg.toImageMsg());
-            }
           }
+        }
+
+        if(image_pub.getNumSubscribers() > 0)
+        {
+          //show input with augmented information
+          cv_bridge::CvImage out_msg;
+          out_msg.header.frame_id = msg->header.frame_id;
+          out_msg.header.stamp = msg->header.stamp;
+          out_msg.encoding = sensor_msgs::image_encodings::RGB8;
+          out_msg.image = resultImg;
+          image_pub.publish(out_msg.toImageMsg());
+        }
+
+        if(debug_pub.getNumSubscribers() > 0)
+        {
+          //show also the internal image resulting from the threshold operation
+          cv_bridge::CvImage debug_msg;
+          debug_msg.header.frame_id = msg->header.frame_id;
+          debug_msg.header.stamp = msg->header.stamp;
+          debug_msg.encoding = sensor_msgs::image_encodings::MONO8;
+          debug_msg.image = MDetector.getThresholdedImage();
+          debug_pub.publish(debug_msg.toImageMsg());
         }
 			}
 			catch (cv_bridge::Exception& e)

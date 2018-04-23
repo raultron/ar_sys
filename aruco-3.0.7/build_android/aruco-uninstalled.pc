@@ -1,0 +1,10 @@
+
+libdir=/home/salinas/Libraries/aruco/trunk/build_android
+includedir=/home/salinas/Libraries/aruco/trunk/src
+
+Name: aruco
+Description: ArUco: a minimal library for Augmented Reality applications based on OpenCv, uninstalled Version.
+Version: 3.0.6
+Requires: opencv >= 2.1.0
+Libs: -L${libdir} -laruco
+Cflags: -I${includedir}

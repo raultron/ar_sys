@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(ar_sys)
 
 #include the CMake file of AruCo
-set("ARUCO_DIR" "aruco-2.0.19/")
+set("ARUCO_DIR" "aruco-3.0.7/")
 add_subdirectory(${ARUCO_DIR})
 
 ## Compile as C++11, supported in ROS Kinetic and newer

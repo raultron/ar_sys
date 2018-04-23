@@ -1,0 +1,14 @@
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/install/strip.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/install/local.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/uninstall.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/edit_cache.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/rebuild_cache.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/install.dir
+/home/salinas/Libraries/aruco/trunk/build_android/CMakeFiles/list_install_components.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/install/strip.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/install/local.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/aruco.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/edit_cache.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/rebuild_cache.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/install.dir
+/home/salinas/Libraries/aruco/trunk/build_android/src/CMakeFiles/list_install_components.dir
