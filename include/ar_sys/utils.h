@@ -25,5 +25,7 @@ namespace ar_sys
      */
   tf::Transform getTf(const cv::Mat &Rvec, const cv::Mat &Tvec);
 
+  tf::Transform markerPoseToStampedTransform(const cv::Mat &RTMatrix);
+
 }
 #endif // UTILS_H

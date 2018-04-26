@@ -54,19 +54,19 @@ tf::Transform ar_sys::getTf(const cv::Mat &Rvec, const cv::Mat &Tvec)
 	/* See http://en.wikipedia.org/wiki/Rotation_matrix for details
 	*/
 
-	//	1	0	0
-	//	0	-1	0
-	//	0	0	-1
-	rotate_to_sys.at<float>(0,0) = 1.0;
-	rotate_to_sys.at<float>(0,1) = 0.0;
-	rotate_to_sys.at<float>(0,2) = 0.0;
-	rotate_to_sys.at<float>(1,0) = 0.0;
-	rotate_to_sys.at<float>(1,1) = -1.0;
-	rotate_to_sys.at<float>(1,2) = 0.0;
-	rotate_to_sys.at<float>(2,0) = 0.0;
-	rotate_to_sys.at<float>(2,1) = 0.0;
-	rotate_to_sys.at<float>(2,2) = -1.0;
-	rot = rot*rotate_to_sys.t();
+  //	-1	0	0
+  //	0	0	1
+  //	0	1	0
+  rotate_to_sys.at<float>(0,0) = -1.0;
+  rotate_to_sys.at<float>(0,1) =  0.0;
+  rotate_to_sys.at<float>(0,2) =  0.0;
+  rotate_to_sys.at<float>(1,0) =  0.0;
+  rotate_to_sys.at<float>(1,1) =  0.0;
+  rotate_to_sys.at<float>(1,2) =  1.0;
+  rotate_to_sys.at<float>(2,0) =  0.0;
+  rotate_to_sys.at<float>(2,1) =  1.0;
+  rotate_to_sys.at<float>(2,2) =  0.0;
+  //rot = rot*rotate_to_sys.t();
 
 	tf::Matrix3x3 tf_rot(rot.at<float>(0,0), rot.at<float>(0,1), rot.at<float>(0,2),
 		rot.at<float>(1,0), rot.at<float>(1,1), rot.at<float>(1,2),
@@ -75,4 +75,22 @@ tf::Transform ar_sys::getTf(const cv::Mat &Rvec, const cv::Mat &Tvec)
 	tf::Vector3 tf_orig(Tvec.at<float>(0,0), Tvec.at<float>(1,0), Tvec.at<float>(2,0));
 
 	return tf::Transform(tf_rot, tf_orig);
+}
+
+tf::Transform ar_sys::markerPoseToStampedTransform(const cv::Mat &RTMatrix) {
+
+
+    tf::Vector3 tv(
+            RTMatrix.at<float>(0, 3),
+            RTMatrix.at<float>(1, 3),
+            RTMatrix.at<float>(2, 3)
+    );
+
+    tf::Matrix3x3 rm(
+            RTMatrix.at<float>(0, 0), RTMatrix.at<float>(0, 1), RTMatrix.at<float>(0, 2),
+            RTMatrix.at<float>(1, 0), RTMatrix.at<float>(1, 1), RTMatrix.at<float>(1, 2),
+            RTMatrix.at<float>(2, 0), RTMatrix.at<float>(2, 1), RTMatrix.at<float>(2, 2)
+    );
+
+    return tf::Transform(rm, tv);
 }

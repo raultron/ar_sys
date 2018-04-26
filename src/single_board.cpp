@@ -51,10 +51,10 @@ class ArSysSingleBoard
 		ros::Publisher pose_pub;
 		ros::Publisher transform_pub; 
 		ros::Publisher position_pub;
-    std::string marker_set_frame;
+    std::string board_frame;
 
 		double marker_size;
-    std::string marker_set_config;
+    std::string board_config;
 
 		ros::NodeHandle nh;
 		image_transport::ImageTransport it;
@@ -80,21 +80,21 @@ class ArSysSingleBoard
 			nh.param<double>("marker_size", marker_size, 0.05);
       std::string package_path = ros::package::getPath("ar_sys");
 
-      nh.param<std::string>("marker_set_config", marker_set_config, package_path+"/data/single/board.yml");
-      nh.param<std::string>("marker_set_frame", marker_set_frame, "");
+      nh.param<std::string>("board_config", board_config, package_path+"/data/single/board.yml");
+      nh.param<std::string>("board_frame", board_frame, "");
 			nh.param<bool>("image_is_rectified", useRectifiedImages, true);
 			nh.param<bool>("draw_markers", draw_markers, false);
 			nh.param<bool>("draw_markers_cube", draw_markers_cube, false);
 			nh.param<bool>("draw_markers_axis", draw_markers_axis, false);
       nh.param<bool>("publish_tf", publish_tf, false);
 
-      the_marker_map_config.readFromFile(marker_set_config.c_str());
+      the_marker_map_config.readFromFile(board_config.c_str());
 
       if ( the_marker_map_config.isExpressedInPixels() && marker_size>0)
                   the_marker_map_config=the_marker_map_config.convertToMeters(marker_size);
 
 			ROS_INFO("ArSys node started with marker size of %f m and board configuration: %s",
-           marker_size, marker_set_config.c_str());
+           marker_size, board_config.c_str());
 		}
 
 		void image_callback(const sensor_msgs::ImageConstPtr& msg)
@@ -132,8 +132,11 @@ class ArSysSingleBoard
           MSPoseTracker.setParams(camParam,the_marker_map_config);
           if ( MSPoseTracker.estimatePose(Markers)){//if pose correctly computed, print the reference system
             aruco::CvDrawingUtils::draw3dAxis(resultImg,camParam,MSPoseTracker.getRvec(),MSPoseTracker.getTvec(),the_marker_map_config[0].getMarkerSize()*2);
-            tf::Transform transform = ar_sys::getTf(MSPoseTracker.getRvec(), MSPoseTracker.getTvec());
-            tf::StampedTransform stampedTransform(transform, msg->header.stamp, msg->header.frame_id, marker_set_frame);
+            //tf::Transform transform = ar_sys::getTf(MSPoseTracker.getRvec(), MSPoseTracker.getTvec());
+
+            tf::Transform transform = ar_sys::markerPoseToStampedTransform(MSPoseTracker.getRTMatrix());
+
+            tf::StampedTransform stampedTransform(transform, msg->header.stamp, msg->header.frame_id, board_frame);
             if (publish_tf)
               br.sendTransform(stampedTransform);
             geometry_msgs::PoseStamped poseMsg;
