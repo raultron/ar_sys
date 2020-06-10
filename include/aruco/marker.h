@@ -32,6 +32,9 @@ or implied, of Rafael Muñoz Salinas.
 #include <opencv2/core/core.hpp>
 #include "exports.h"
 #include "cameraparameters.h"
+#include <opencv2/imgproc/imgproc_c.h>
+#include <opencv2/core/types_c.h>
+
 using namespace std;
 namespace aruco {
 /**\brief This class represents a marker. It is a vector of the fours corners ot the marker
